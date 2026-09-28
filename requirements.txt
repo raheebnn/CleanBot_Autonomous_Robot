@@ -1,0 +1,8 @@
+# Raspberry Pi 5 — install picamera2 and lgpio via apt:
+#   sudo apt install -y python3-picamera2 python3-lgpio
+numpy
+opencv-python-headless
+torch
+ultralytics
+mpu6050-raspberrypi
+smbus2

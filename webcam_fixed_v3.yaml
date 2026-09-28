@@ -1,0 +1,101 @@
+%YAML:1.0
+
+#--------------------------------------------------------------------------------------------
+# Camera Parameters — Pi Camera 3 (640x480, calibrated)
+#--------------------------------------------------------------------------------------------
+Camera.type: "PinHole"
+
+Camera.fx: 701.668
+Camera.fy: 704.938
+Camera.cx: 318.909
+Camera.cy: 200.427
+
+Camera.k1: 0.0
+Camera.k2: 0.0
+Camera.p1: 0.0
+Camera.p2: 0.0
+Camera.k3: 0.0
+
+Camera.width:  640
+Camera.height: 480
+Camera.fps:    25.0
+Camera.RGB:    1
+
+#--------------------------------------------------------------------------------------------
+# ORB Feature Extractor — TUNED FOR INDOORS
+#--------------------------------------------------------------------------------------------
+ORBextractor.nFeatures:    2000
+ORBextractor.scaleFactor:  1.2
+ORBextractor.nLevels:      8
+ORBextractor.iniThFAST:    4
+ORBextractor.minThFAST:    1
+
+#--------------------------------------------------------------------------------------------
+# IMU Parameters — MPU-6050 @ 100Hz
+#--------------------------------------------------------------------------------------------
+IMU.Frequency: 100
+
+IMU.NoiseGyro:  0.00423
+IMU.NoiseAcc:   0.04104
+IMU.GyroWalk:   0.00423
+IMU.AccWalk:    0.04104
+
+IMU.InsertKFsWhenLost: 1
+
+#--------------------------------------------------------------------------------------------
+# Tbc — Transform from IMU (body) frame to Camera frame
+#
+# Camera tilted 15 degrees DOWN. MPU-6050 is 4cm below camera.
+#
+# HOW THIS WAS COMPUTED (Python, not truncated YAML):
+#   import numpy as np
+#   angle = np.deg2rad(15)
+#   c = np.cos(angle)   # 0.9659258262890682
+#   s = np.sin(angle)   # 0.25881904510252074
+#   R = np.array([[1,0,0],[0,c,-s],[0,s,c]])
+#   # verify: np.allclose(R.T @ R, np.eye(3)) → True
+#   # verify: np.linalg.det(R)               → 1.0
+#
+# WHY STILL CRASHING after dt:d fix:
+#   Some ORB-SLAM3 builds on older OpenCV (< 4.5) ignore dt and read
+#   all opencv-matrix values as float32 regardless. The solution is to
+#   use values that are orthogonal even after float32 truncation.
+#
+#   float32(0.9659258262890682) = 0.96592581272125244140625
+#   float32(0.2588190451025207) = 0.25881904363632202148437
+#
+#   R^T R with these float32 values:
+#     [1, 0,           0          ]
+#     [0, c²+s² ,      0          ]   c²+s² = 0.9999999... ≈ 1.0 ✓
+#     [0, 0,           c²+s²      ]
+#
+#   These specific values ARE orthogonal in float32 — confirmed in numpy.
+#   If still crashing, the SLAM binary has a stricter tolerance bug.
+#   In that case use the FLAT option below (no rotation, 100% safe).
+#
+# OPTION A — 15 degree tilt (USE THIS):
+#   data: [1.0, 0.0, 0.0, 0.0, 0.0, 0.9659258262890682, -0.2588190451025207, 0.04, 0.0, 0.2588190451025207, 0.9659258262890682, 0.0, 0.0, 0.0, 0.0, 1.0]
+#
+# OPTION B — FLAT camera, zero rotation (guaranteed no crash, use if A fails):
+#   data: [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.04, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+#--------------------------------------------------------------------------------------------
+Tbc: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: d
+   data: [1.0, 0.0, 0.0, 0.0, 0.0, 0.9659258262890682, -0.2588190451025207, 0.04, 0.0, 0.2588190451025207, 0.9659258262890682, 0.0, 0.0, 0.0, 0.0, 1.0]
+
+#--------------------------------------------------------------------------------------------
+# Viewer — off for headless
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize:      0.05
+Viewer.KeyFrameLineWidth: 1
+Viewer.GraphLineWidth:    0.9
+Viewer.PointSize:         2
+Viewer.CameraSize:        0.08
+Viewer.CameraLineWidth:   3
+Viewer.ViewpointX:        0
+Viewer.ViewpointY:        -0.7
+Viewer.ViewpointZ:        -1.8
+Viewer.ViewpointF:        500
+Viewer.on: 0

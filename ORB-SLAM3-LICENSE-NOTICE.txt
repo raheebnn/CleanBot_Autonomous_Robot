@@ -1,0 +1,13 @@
+ORB-SLAM3 LICENSE NOTICE
+
+ORB-SLAM3 is an external dependency of this project.
+
+Official repository:
+https://github.com/UZ-SLAMLab/ORB_SLAM3
+
+ORB-SLAM3 is distributed under the GNU General Public License v3.0 (GPLv3)
+by its original authors.
+
+This repository does not relicense ORB-SLAM3 under the MIT License.
+Consult the official ORB-SLAM3 repository and its LICENSE file for the
+complete license terms.

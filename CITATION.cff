@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this project, please cite it as below."
+title: "CleanBot: Autonomous Cleaning Robot with Visual-Inertial SLAM, YOLO Detection and A* Navigation"
+authors:
+  - family-names: "Nazmul"
+    given-names: "Raheeb Bin"
+    affiliation: "North South University"
+license: MIT
+date-released: 2026-09-28
+keywords:
+  - robotics
+  - SLAM
+  - ORB-SLAM3
+  - visual-inertial odometry
+  - YOLO
+  - Raspberry Pi 5
+  - path planning
